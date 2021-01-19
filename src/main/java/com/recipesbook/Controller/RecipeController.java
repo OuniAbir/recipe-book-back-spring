@@ -32,6 +32,16 @@ public class RecipeController {
 
 	}
 
+	@GetMapping("/findRecipeById")
+	@ResponseBody
+	public Recipe findRecipeById(@RequestParam(value = "recipeId")  Long recipeId ) {
+		Optional<Recipe> result = recipeRepository.findRecipeById(recipeId) ;
+		Recipe theRecipe ;
+		if (result.isPresent()) { theRecipe = result.get();} else { throw new RuntimeException("Did not find Recipe with id : "+recipeId ); } ;
+		return theRecipe ;
+	}
+	
+	
 	@GetMapping("/findByCategoryId")
 	@ResponseBody
 	public Set<Recipe> findByCategoryid(@RequestParam(value = "categoryId", required = true) Long categoryId) {

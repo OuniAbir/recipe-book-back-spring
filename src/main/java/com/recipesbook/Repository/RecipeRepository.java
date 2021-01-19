@@ -19,4 +19,8 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 	
 	@Query( value = "SELECT * FROM Recipe WHERE lower(name) like lower( concat('%', :name  , '%'))" , nativeQuery = true )
 	Optional<Set<Recipe>>  findByNameContaining(@Param("name") String name );
+	
+	
+	@Query(value = "SELECT * FROM Recipe WHERE id =:recipeId" , nativeQuery = true )
+	public Optional<Recipe> findRecipeById(@Param(value = "recipeId")  Long recipeId ) ;
 }
