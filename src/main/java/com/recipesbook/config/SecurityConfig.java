@@ -1,6 +1,7 @@
 package com.recipesbook.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -8,22 +9,28 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
+
 @EnableWebSecurity
+@EnableAsync
+/*a slight delay to send email after saving the user in the database ~1400 ms */
+/* we send the mail asynch, response time ~200ms */
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Override
-	public void configure(HttpSecurity http) throws Exception {
-		/* allow all the requests which match “/auth/**” */
+    @Override
+    public void configure(HttpSecurity httpSecurity) throws Exception {
+    	/* allow all the requests which match “/auth/**” */
 		/* this endpoints are used for authentication and registration */ 
 		/* at that point of time we don’t expect the user to be authenticated */ 
-		http.csrf().disable().authorizeRequests().antMatchers("/auth/**").permitAll().anyRequest().authenticated();
-		}
+        httpSecurity.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/api/auth/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated();
+    }
 
-	/*for password encryption in DB */
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		
-		return new BCryptPasswordEncoder();
-	}
-	
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
