@@ -2,7 +2,6 @@ package com.recipesbook.Controller;
 
 import static org.springframework.http.HttpStatus.OK;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,13 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.recipesbook.Dto.RegisterRequest;
 import com.recipesbook.Service.AuthService;
 
+import lombok.AllArgsConstructor;
+
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
+@AllArgsConstructor
 public class AuthController {
 
-	@Autowired
-	private AuthService authService ;
+	private final  AuthService authService ;
 	
 	@PostMapping("/signup")
 	public ResponseEntity<RegisterRequest> signup(@RequestBody RegisterRequest registerRequest ) { 

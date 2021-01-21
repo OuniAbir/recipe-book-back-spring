@@ -4,11 +4,9 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.recipesbook.Domain.NotificationEmail;
 import com.recipesbook.Domain.User;
@@ -25,21 +23,16 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @AllArgsConstructor
 @Slf4j
+@Transactional
 public class AuthService {
 
-	@Autowired
-	PasswordEncoder passwordEncoder;
-	@Autowired
-	UserRepository userRepository;
-	@Autowired
-	VerificationTokenRepository verificationTokenRepository  ;
-
+	private final PasswordEncoder passwordEncoder;
+	private final UserRepository userRepository;
+	private final VerificationTokenRepository verificationTokenRepository  ;
 	 
     private final MailContentBuilder mailContentBuilder;
 	private final MailService mailService ;
 
-		
-	@Transactional
 	public void signup(RegisterRequest registerRequest) {
 		User user = new User();
 		user.setUsername(registerRequest.getUsername());
@@ -56,6 +49,7 @@ public class AuthService {
 		 mailService.sendMail(new NotificationEmail("Please Activate your account", user.getEmail(), message));
 	}
 
+	
 	private String generateVerificationToken(User user) {
 		String token = UUID.randomUUID().toString();
 		VerificationToken verificationToken = new VerificationToken();
@@ -74,9 +68,9 @@ public class AuthService {
 		fetchUserAndEnable(verificationTokenOptional.get());
 		
 	}
-
-	@Transactional
-	private void fetchUserAndEnable(VerificationToken verificationToken) {
+	
+	
+ 	private void fetchUserAndEnable(VerificationToken verificationToken) {
 		String username = verificationToken.getUser().getUsername();
 		User user = userRepository.findByUserName(username).orElseThrow(()->  new RecipeBookException("User not Found with id - " + username));
 		user.setEnabled(true);

@@ -3,7 +3,6 @@ package com.recipesbook.Controller;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,13 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.recipesbook.Domain.Recipe;
 import com.recipesbook.Repository.RecipeRepository;
 
+import lombok.AllArgsConstructor;
+
 @RestController
 @RequestMapping("/recipes")
 @CrossOrigin("http://localhost:4200")
+@AllArgsConstructor
 public class RecipeController {
 
-	@Autowired
-	private RecipeRepository recipeRepository;
+	private final RecipeRepository recipeRepository;
 
 	@GetMapping("/")
 	@ResponseBody
