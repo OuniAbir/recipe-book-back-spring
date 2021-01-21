@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.recipesbook.Dto.AuthenticationResponse;
+import com.recipesbook.Dto.LoginRequest;
 import com.recipesbook.Dto.RegisterRequest;
 import com.recipesbook.Service.AuthService;
 
@@ -35,6 +37,12 @@ public class AuthController {
 		
 		authService.verifyAccount(token);
 		return new ResponseEntity<>("Account Activated Successully", OK);
+	}
+	
+	@PostMapping("/login")
+	public AuthenticationResponse  login(@RequestBody LoginRequest LoginRequest )
+	{
+		return authService.login(LoginRequest);
 	}
 	
 }
