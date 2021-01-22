@@ -1,18 +1,26 @@
 package com.recipesbook.Security;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.*;
-import java.security.cert.CertificateException;
-
-import io.jsonwebtoken.Jwts;
-
 import com.recipesbook.Exception.RecipeBookException;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import static io.jsonwebtoken.Jwts.parser;
 
 
 /* assymetric encryption using Java keystore :
@@ -51,5 +59,30 @@ public class JwtProvider {
             throw new RecipeBookException("Exception occured while retrieving public key from keystore");
         }
     }
+
+    public boolean validateToken(String jwt) {
+    	/* the token is signed using the private key
+    	 * Now we will make use of the public key to validate it  */
+        parser().setSigningKey(getPublickey()).parseClaimsJws(jwt);
+        return true;
+    }
+
+    private PublicKey getPublickey() {
+        try {
+            return keyStore.getCertificate("springblog").getPublicKey();
+        } catch (KeyStoreException e) {
+            throw new RecipeBookException("Exception occured while retrieving public key from keystore");
+        }
+    }
+
+    public String getUsernameFromJWT(String token) {
+        Claims claims = parser()
+                .setSigningKey(getPublickey())
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject();
+    }
+
 }
  

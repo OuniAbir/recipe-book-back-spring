@@ -2,6 +2,8 @@ package com.recipesbook.Domain;
 
  
 
+import java.time.Instant;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,5 +34,9 @@ public class VerificationToken {
 	@OneToOne( fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
+	
+    @Column(name = "expiryDate")
+    private Instant expiryDate;
+
 	
  }
