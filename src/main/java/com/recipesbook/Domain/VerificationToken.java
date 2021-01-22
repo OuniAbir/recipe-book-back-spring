@@ -35,7 +35,7 @@ public class VerificationToken {
 	@JoinColumn(name = "user_id")
 	private User user;
 	
-    @Column(name = "expiryDate")
+    @Column(name = "expiry_date")
     private Instant expiryDate;
 
 	
