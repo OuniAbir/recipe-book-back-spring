@@ -17,16 +17,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
- 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "recipe")
 public class Recipe {
-
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,18 +45,13 @@ public class Recipe {
 
 	@Column(name = "cooktime")
 	private int cooktime ;
-
 	
 	@Column(name = "servings")
 	private int servings;
 	
 	@Column(name = "calories")
 	private int calories;
-	
-	@Column(name = "comments")
-	private String comments ;
-	
-	
+		
 	@Column(name = "instructions")
 	private String instructions ;
 	
@@ -64,16 +61,26 @@ public class Recipe {
 	
 	@Column(name = "image_url")
 	private String imageUrl ;
-   
+  
+	@Column(name = "vote_Count")
+    private int voteCount;
+	
 	/* many recipes to one category bidirectional*/
 	@ManyToOne
 	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
-	
+
 	/* one recipe to many categories unidirectional*/
 	@OneToMany(fetch = FetchType.LAZY,cascade =  CascadeType.ALL)
 	@JoinColumn(name = "recipe_id")
 	private Set<Ingredient> ingredients; 
+
+	/* many recipes to one user */
+	@ManyToOne(fetch = FetchType.LAZY,cascade =  CascadeType.ALL)
+	@JoinColumn(name="user_id", nullable = false)
+	private User user ;
+	
+
 		
 	public void addIngredient(Ingredient ingredient) {
 		
@@ -81,5 +88,6 @@ public class Recipe {
 		
 		ingredients.add(ingredient);
  	}
+	
 	
 }
