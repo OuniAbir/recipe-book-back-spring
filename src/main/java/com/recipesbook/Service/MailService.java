@@ -20,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 class MailService {
 
     private final JavaMailSender mailSender;
-    private final MailContentBuilder mailContentBuilder;
 
     @Async
     void sendMail(NotificationEmail notificationEmail) {
@@ -29,7 +28,7 @@ class MailService {
             messageHelper.setFrom("RecipeBook@email.com");
             messageHelper.setTo(notificationEmail.getRecipient());
             messageHelper.setSubject(notificationEmail.getSubject());
-            messageHelper.setText(mailContentBuilder.Build(notificationEmail.getBody()));
+            messageHelper.setText(notificationEmail.getBody());
         };
         
         try {
