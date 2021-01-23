@@ -2,7 +2,7 @@ package com.recipesbook.Domain;
 
 import java.time.Instant;
 
-import javax.persistence.Column;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -30,11 +30,8 @@ public class Comment {
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
 	    
-	    @Column(name = "text")
 	    @NotEmpty
 	    private String text;
-	    
-	    @Column(name = "created_date")
 	    private Instant createdDate;
 
 	    
