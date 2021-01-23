@@ -19,27 +19,27 @@ import lombok.AllArgsConstructor;
 
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/auth/")
 @AllArgsConstructor
 public class AuthController {
 
 	private final  AuthService authService ;
 	
-	@PostMapping("/signup")
+	@PostMapping("signup")
 	public ResponseEntity<RegisterRequest> signup(@RequestBody RegisterRequest registerRequest ) { 
 		
 		authService.signup(registerRequest);
 		return new ResponseEntity<RegisterRequest>(OK);
 	}
 	
-	@GetMapping("/accountVerification/{token}")
+	@GetMapping("accountVerification/{token}")
 	public ResponseEntity<String> verifyAccount(@PathVariable String token){
 		
 		authService.verifyAccount(token);
 		return new ResponseEntity<>("Account Activated Successully", OK);
 	}
 	
-	@PostMapping("/login")
+	@PostMapping("login")
 	public AuthenticationResponse  login(@RequestBody LoginRequest LoginRequest )
 	{
 		return authService.login(LoginRequest);

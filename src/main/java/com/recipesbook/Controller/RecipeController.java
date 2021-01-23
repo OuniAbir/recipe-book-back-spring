@@ -40,17 +40,17 @@ public class RecipeController {
 		return status(HttpStatus.OK).body(recipeService.findRecipeById(recipeId));
 	}
 
-	@GetMapping("by-category/{id}")
-	public ResponseEntity<Set<RecipeResponse>> findByCategoryid(@PathVariable Long categoryId) {
+	@GetMapping("by-category/{categoryid}")
+	public ResponseEntity<Set<RecipeResponse>> findByCategoryid(@PathVariable Long categoryid) {
 
-		return status(HttpStatus.OK).body(recipeService.findByCategoryid(categoryId));
+		return status(HttpStatus.OK).body(recipeService.findByCategoryid(categoryid));
 
 	}
 
-	@GetMapping("by-name/{name}")
-	public ResponseEntity<Set<RecipeResponse>> findBySearchName(@PathVariable String name) {
+	@GetMapping("by-name/{recipeName}")
+	public ResponseEntity<Set<RecipeResponse>> findBySearchName(@PathVariable String recipeName) {
 
-		return status(HttpStatus.OK).body(recipeService.findBySearchName(name));
+		return status(HttpStatus.OK).body(recipeService.findBySearchName(recipeName));
 	}
 	
 	@PostMapping
@@ -59,5 +59,12 @@ public class RecipeController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 	
+	
+	@GetMapping("by-user/{userName}")
+	public ResponseEntity<Set<RecipeResponse>> getByUserName(@PathVariable String userName){
+
+		return status(HttpStatus.OK).body(recipeService.findbyUserName(userName));
+		
+	}
 
 }

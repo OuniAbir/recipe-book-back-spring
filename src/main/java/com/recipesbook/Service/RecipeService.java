@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 
 import com.recipesbook.Domain.Category;
 import com.recipesbook.Domain.Recipe;
+import com.recipesbook.Domain.User;
 import com.recipesbook.Dto.RecipeRequest;
 import com.recipesbook.Dto.RecipeResponse;
 import com.recipesbook.Exception.RecipeBookException;
 import com.recipesbook.Mapper.RecipeMapper;
 import com.recipesbook.Repository.CategoryRepository;
 import com.recipesbook.Repository.RecipeRepository;
+import com.recipesbook.Repository.UserRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -25,6 +27,7 @@ public class RecipeService {
 	private final CategoryRepository categoryRepository;
     private final AuthService authService;
 	private final RecipeMapper recipeMapper;
+	private final UserRepository userRepository;
 
 	public Set<RecipeResponse> findAll() {
 		return recipeRepository.findAll().stream().map(recipeMapper::mapRecipeEntityToRecipeResponse).collect(toSet());
@@ -52,5 +55,13 @@ public class RecipeService {
                 .orElseThrow(() -> new RecipeBookException("No category found with this name "+ recipeRequest.getCategoryName()));      
         recipeRepository.save(recipeMapper.mapRecipeRequestToRecipeEntity(recipeRequest, Category, authService.getCurrentUser()));
     }
+
+	public Set<RecipeResponse> findbyUserName(String name) {
+		User user = userRepository.findByUserName(name).orElseThrow(()-> new RecipeBookException("User not found with name :"+ name));
+		return recipeRepository.findbyUser(user.getId())
+				.stream()
+				.map(recipeMapper::mapRecipeEntityToRecipeResponse)
+				.collect(toSet());
+	}
 
 }
