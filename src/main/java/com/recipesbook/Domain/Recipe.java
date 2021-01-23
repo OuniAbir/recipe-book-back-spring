@@ -1,20 +1,15 @@
 package com.recipesbook.Domain;
+ 
+import java.time.Instant;
+import java.util.ArrayList;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -34,60 +29,41 @@ public class Recipe {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "name")
 	private String name ;
-	
-	@Column(name = "source")
 	private String source ;
-		
-	@Column(name = "preptime")
 	private int preptime ;
-
-	@Column(name = "cooktime")
+	private int waittime ;
 	private int cooktime ;
-	
-	@Column(name = "servings")
-	private int servings;
-	
-	@Column(name = "calories")
-	private int calories;
-		
-	@Column(name = "instructions")
+	private int servings ;
+	private int comments ;
+	private int calories ;
+	private int fat ;
+	private int satfat ;
+	private int carbs ;
+	private int fiber ;
+	private int sugar ;
+	private int protein ;
 	private String instructions ;
-	
-	@Column(name = "difficulty")
-    @Enumerated(EnumType.STRING)
-	private Difficulty difficulty ;
-	
-	@Column(name = "image_url")
+	private ArrayList<String> ingredients;
 	private String imageUrl ;
-  
-	@Column(name = "vote_Count")
+
+    private Instant createdDate;
     private int voteCount;
 	
+	
 	/* many recipes to one category bidirectional*/
-	@ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
-
-	/* one recipe to many categories unidirectional*/
-	@OneToMany(fetch = FetchType.LAZY,cascade =  CascadeType.ALL)
-	@JoinColumn(name = "recipe_id")
-	private Set<Ingredient> ingredients; 
+	
 
 	/* many recipes to one user */
-	@ManyToOne(fetch = FetchType.LAZY,cascade =  CascadeType.ALL)
-	@JoinColumn(name="user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="user_id")
 	private User user ;
 	
 
+
 		
-	public void addIngredient(Ingredient ingredient) {
-		
-		if (this.ingredients == null ) { this.ingredients = new HashSet<Ingredient>(); }
-		
-		ingredients.add(ingredient);
- 	}
-	
 	
 }

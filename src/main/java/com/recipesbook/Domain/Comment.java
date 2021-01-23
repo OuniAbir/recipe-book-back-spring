@@ -1,5 +1,7 @@
 package com.recipesbook.Domain;
 
+import java.time.Instant;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,6 +33,10 @@ public class Comment {
 	    @Column(name = "text")
 	    @NotEmpty
 	    private String text;
+	    
+	    @Column(name = "created_date")
+	    private Instant createdDate;
+
 	    
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "recipe_id")

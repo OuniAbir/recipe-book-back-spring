@@ -1,66 +1,63 @@
 package com.recipesbook.Controller;
 
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.recipesbook.Domain.Recipe;
-import com.recipesbook.Repository.RecipeRepository;
+import com.recipesbook.Dto.RecipeRequest;
+import com.recipesbook.Dto.RecipeResponse;
+import com.recipesbook.Service.RecipeService;
 
 import lombok.AllArgsConstructor;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import static org.springframework.http.ResponseEntity.status;
+
 @RestController
-@RequestMapping("/recipes")
+@RequestMapping("/api/recipes/")
 @CrossOrigin("http://localhost:4200")
 @AllArgsConstructor
 public class RecipeController {
 
-	private final RecipeRepository recipeRepository;
+	private final RecipeService recipeService;
 
-	@GetMapping("/")
-	@ResponseBody
-	public Set<Recipe> findAll() {
-		Optional<Set<Recipe>> result = recipeRepository.findAllRecipes();
-		Set<Recipe> recipes;
-		if (result.isPresent()) {recipes = result.get();} else {throw new RuntimeException("Did not find recipe ");};
-		return recipes;
+	@GetMapping
+	public ResponseEntity<Set<RecipeResponse>> findAll() {
+		return status(HttpStatus.OK).body(recipeService.findAll());
 
 	}
 
-	@GetMapping("/findRecipeById")
-	@ResponseBody
-	public Recipe findRecipeById(@RequestParam(value = "recipeId")  Long recipeId ) {
-		Optional<Recipe> result = recipeRepository.findRecipeById(recipeId) ;
-		Recipe theRecipe ;
-		if (result.isPresent()) { theRecipe = result.get();} else { throw new RuntimeException("Did not find Recipe with id : "+recipeId ); } ;
-		return theRecipe ;
+	@GetMapping("{recipeId}")
+	public ResponseEntity<RecipeResponse> findRecipeById(@PathVariable Long recipeId) {
+
+		return status(HttpStatus.OK).body(recipeService.findRecipeById(recipeId));
+	}
+
+	@GetMapping("by-category/{id}")
+	public ResponseEntity<Set<RecipeResponse>> findByCategoryid(@PathVariable Long categoryId) {
+
+		return status(HttpStatus.OK).body(recipeService.findByCategoryid(categoryId));
+
+	}
+
+	@GetMapping("by-name/{name}")
+	public ResponseEntity<Set<RecipeResponse>> findBySearchName(@PathVariable String name) {
+
+		return status(HttpStatus.OK).body(recipeService.findBySearchName(name));
 	}
 	
+	@PostMapping
+	public ResponseEntity<Void> createRecipe(@RequestBody RecipeRequest recipeRequest) {
+		recipeService.save(recipeRequest);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 	
-	@GetMapping("/findByCategoryId")
-	@ResponseBody
-	public Set<Recipe> findByCategoryid(@RequestParam(value = "categoryId", required = true) Long categoryId) {
-		Optional<Set<Recipe>> result = recipeRepository.findByCategoryId(categoryId);
-		Set<Recipe> recipes;
-		if (result.isPresent()) {recipes = result.get();} else {throw new RuntimeException("Did not find recipe with category Id - " + categoryId);};
-		return recipes;
-
-	}
-
-	@GetMapping("/findBySearchName")
-	@ResponseBody
-	public Set<Recipe> findBySearchName(
-			@RequestParam(value = "name", required = true) String name) {
-		Optional<Set<Recipe>> result = recipeRepository.findByNameContaining(name);
-		Set<Recipe> recipes;
-		if (result.isPresent()) {recipes = result.get();} else {throw new RuntimeException("Did not find recipe with name containing - " + name);};
-		return recipes;
-	}
 
 }
