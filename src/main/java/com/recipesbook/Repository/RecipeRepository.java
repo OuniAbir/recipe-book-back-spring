@@ -11,14 +11,14 @@ import com.recipesbook.Domain.Recipe;
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 	
 	
-	@Query( value = "SELECT * FROM Recipe WHERE category_id = :id" , nativeQuery = true )
+	@Query( value = "SELECT * FROM recipe WHERE category_id = :id" , nativeQuery = true )
 	public Set<Recipe> findByCategoryId(@Param("id") Long id );
 	
-	@Query( value = "SELECT * FROM Recipe WHERE lower(name) like lower( concat('%', :name  , '%'))" , nativeQuery = true )
+	@Query( value = "SELECT * FROM recipe WHERE lower(name) like lower( concat('%', :name  , '%'))" , nativeQuery = true )
 	public Set<Recipe>  findByNameContaining(@Param("name") String name );
 	
 	
-	@Query( value = "SELECT * FROM Recipe WHERE user_id= :userId " , nativeQuery = true )
+	@Query( value = "SELECT * FROM recipe WHERE user_id= :userId " , nativeQuery = true )
 	public Set<Recipe>  findbyUser(@Param("userId") Long userId );
 	
 
