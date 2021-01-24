@@ -1,9 +1,7 @@
 package com.recipesbook.Service;
-
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +16,7 @@ import com.recipesbook.Domain.User;
 import com.recipesbook.Domain.VerificationToken;
 import com.recipesbook.Dto.AuthenticationResponse;
 import com.recipesbook.Dto.LoginRequest;
+import com.recipesbook.Dto.RefreshTokenRequest;
 import com.recipesbook.Dto.RegisterRequest;
 import com.recipesbook.Exception.RecipeBookException;
 import com.recipesbook.Repository.UserRepository;
@@ -43,7 +42,9 @@ public class AuthService {
 
 	private final AuthenticationManager authenticationManager;
 	private final JwtProvider jwtProvider;
-
+	
+	private final RefreshTokenService refreshTokenService;
+	
 	public void signup(RegisterRequest registerRequest) {
 		User user = new User();
 		user.setUsername(registerRequest.getUsername());
@@ -94,15 +95,35 @@ public class AuthService {
 
 	}
 
-	public AuthenticationResponse login(LoginRequest loginRequest) {
-		Authentication authenticate = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-		SecurityContextHolder.getContext().setAuthentication(authenticate);
-		String authenticationToken = jwtProvider.generateToken(authenticate);
-		System.out.println(getCurrentUser());
-		return new AuthenticationResponse(authenticationToken, loginRequest.getUsername());
-	}
+    public AuthenticationResponse login(LoginRequest loginRequest) {
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+                loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
+        String token = jwtProvider.generateToken(authenticate);
+        return AuthenticationResponse.builder()
+                .authenticationToken(token)
+                .refreshToken(refreshTokenService.generateRefreshToken().getToken())
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .username(loginRequest.getUsername())
+                .build();
+    }
+    
+    public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+    	/* check if refresh token comming from refreshTokenRequest exsist in db */
+        refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
+        
+        System.out.println();
+        /* validation is successful, generate JWT again and send it back*/
+        String token = jwtProvider.generateTokenWithUserName(refreshTokenRequest.getUsername());
+        System.out.println("<<<<<<<<<<<<< refreshToken generated token "+ token );
 
+        return AuthenticationResponse.builder()
+                .authenticationToken(token)
+                .refreshToken(refreshTokenRequest.getRefreshToken())
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .username(refreshTokenRequest.getUsername())
+                .build();
+    }
     @Transactional(readOnly = true)
     public User getCurrentUser() {
         org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.
@@ -110,4 +131,8 @@ public class AuthService {
         System.out.println(principal.toString());
         return userRepository.findByUserName(principal.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getUsername()));
     }
+    
+    
+
+    
 }
