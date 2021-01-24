@@ -35,7 +35,6 @@ public class Recipe {
 	private int waittime ;
 	private int cooktime ;
 	private int servings ;
-	private int comments ;
 	private int calories ;
 	private int fat ;
 	private int satfat ;
@@ -48,8 +47,6 @@ public class Recipe {
 	private String imageUrl ;
 
     private Instant createdDate;
-    private int voteCount;
-	
 	
 	/* many recipes to one category bidirectional*/
     @ManyToOne(fetch = FetchType.LAZY)
@@ -63,7 +60,7 @@ public class Recipe {
 	private User user ;
 	
 
-
+    private int voteCount;
 		
 	
 }

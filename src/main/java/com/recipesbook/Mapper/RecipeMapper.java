@@ -19,6 +19,7 @@ public interface RecipeMapper {
     @Mapping(target = "createdDate", expression = "java(java.time.Instant.now())")
 	@Mapping(source = "category" , target = "category")
 	@Mapping(source = "user" , target = "user")
+    @Mapping(target = "voteCount", constant = "0")
 	Recipe mapRecipeRequestToRecipeEntity(RecipeRequest recipeRequest,Category category, User user);
 	
 	

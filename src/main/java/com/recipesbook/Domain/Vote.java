@@ -1,6 +1,5 @@
 package com.recipesbook.Domain;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -27,13 +26,8 @@ public class Vote {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id ;
-	
-	@Column(name = "likes")
-	private int likes ; 
-	
-	@Column(name = "dislikes")
-    private int dislikes;
-    
+	private VoteType voteType;
+
 	@NotNull
 	@OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")

@@ -22,7 +22,6 @@ public class RecipeResponse {
 	private int waittime ;
 	private int cooktime ;
 	private int servings ;
-	private int comments ;
 	private int calories ;
 	private int fat ;
 	private int satfat ;
@@ -37,5 +36,7 @@ public class RecipeResponse {
 
 	private String categoryName ;
 	private String UserName ;
+
+    private int voteCount;
 
 }

@@ -22,7 +22,6 @@ public class RecipeRequest {
 	private int waittime ;
 	private int cooktime ;
 	private int servings ;
-	private int comments ;
 	private int calories ;
 	private int fat ;
 	private int satfat ;
