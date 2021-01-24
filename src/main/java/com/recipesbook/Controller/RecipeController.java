@@ -2,7 +2,6 @@ package com.recipesbook.Controller;
 
 import java.util.Set;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +21,6 @@ import static org.springframework.http.ResponseEntity.status;
 
 @RestController
 @RequestMapping("/api/recipes/")
-@CrossOrigin("http://localhost:4200")
 @AllArgsConstructor
 public class RecipeController {
 
