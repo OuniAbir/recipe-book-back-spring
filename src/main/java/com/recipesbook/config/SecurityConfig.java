@@ -2,6 +2,7 @@ package com.recipesbook.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
@@ -32,12 +33,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
+        /*    .antMatchers(HttpMethod.GET,"/api/recipes/**").permitAll()*/
     	/* allow all the requests which match “/auth/**” */
 		/* this endpoints are used for authentication and registration */ 
 		/* at that point of time we don’t expect the user to be authenticated */ 
-        httpSecurity.csrf().disable()
-                .authorizeRequests()
+        httpSecurity.cors().and().csrf().disable()
+        .authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/recipe-category/").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/comments/**").permitAll()
                 .antMatchers("/v2/api-docs",
                         "/configuration/ui",
                         "/swagger-resources/**",
