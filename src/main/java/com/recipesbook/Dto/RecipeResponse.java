@@ -39,4 +39,10 @@ public class RecipeResponse {
 
     private int voteCount;
 
+    private boolean upVote;
+    private boolean downVote;
+    
+    private int commentCount;
+
+    
 }

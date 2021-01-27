@@ -1,7 +1,10 @@
 package com.recipesbook.Service;
+
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,9 +45,9 @@ public class AuthService {
 
 	private final AuthenticationManager authenticationManager;
 	private final JwtProvider jwtProvider;
-	
+
 	private final RefreshTokenService refreshTokenService;
-	
+
 	public void signup(RegisterRequest registerRequest) {
 		User user = new User();
 		user.setUsername(registerRequest.getUsername());
@@ -95,44 +98,44 @@ public class AuthService {
 
 	}
 
-    public AuthenticationResponse login(LoginRequest loginRequest) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
-                loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authenticate);
-        String token = jwtProvider.generateToken(authenticate);
-        return AuthenticationResponse.builder()
-                .authenticationToken(token)
-                .refreshToken(refreshTokenService.generateRefreshToken().getToken())
-                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
-                .username(loginRequest.getUsername())
-                .build();
-    }
-    
-    public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-    	/* check if refresh token comming from refreshTokenRequest exsist in db */
-        refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
-        
-        System.out.println();
-        /* validation is successful, generate JWT again and send it back*/
-        String token = jwtProvider.generateTokenWithUserName(refreshTokenRequest.getUsername());
-        System.out.println("<<<<<<<<<<<<< refreshToken generated token "+ token );
+	public AuthenticationResponse login(LoginRequest loginRequest) {
+		Authentication authenticate = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+		SecurityContextHolder.getContext().setAuthentication(authenticate);
+		String token = jwtProvider.generateToken(authenticate);
+		return AuthenticationResponse.builder().authenticationToken(token)
+				.refreshToken(refreshTokenService.generateRefreshToken().getToken())
+				.expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+				.username(loginRequest.getUsername()).build();
+	}
 
-        return AuthenticationResponse.builder()
-                .authenticationToken(token)
-                .refreshToken(refreshTokenRequest.getRefreshToken())
-                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
-                .username(refreshTokenRequest.getUsername())
-                .build();
-    }
-    @Transactional(readOnly = true)
-    public User getCurrentUser() {
-        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.
-                getContext().getAuthentication().getPrincipal();
-        System.out.println(principal.toString());
-        return userRepository.findByUserName(principal.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getUsername()));
-    }
-    
-    
+	public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+		/* check if refresh token comming from refreshTokenRequest exsist in db */
+		refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
 
-    
+		System.out.println();
+		/* validation is successful, generate JWT again and send it back */
+		String token = jwtProvider.generateTokenWithUserName(refreshTokenRequest.getUsername());
+		System.out.println("<<<<<<<<<<<<< refreshToken generated token " + token);
+
+		return AuthenticationResponse.builder().authenticationToken(token)
+				.refreshToken(refreshTokenRequest.getRefreshToken())
+				.expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+				.username(refreshTokenRequest.getUsername()).build();
+	}
+
+	@Transactional(readOnly = true)
+	public User getCurrentUser() {
+		org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder
+				.getContext().getAuthentication().getPrincipal();
+		System.out.println(principal.toString());
+		return userRepository.findByUserName(principal.getUsername())
+				.orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getUsername()));
+	}
+
+	public boolean isLoggedIn() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return (!(authentication instanceof AnonymousAuthenticationToken) && authentication.isAuthenticated());
+	}
+
 }
