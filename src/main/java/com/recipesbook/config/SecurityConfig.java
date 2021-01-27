@@ -33,7 +33,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
-        /*    .antMatchers(HttpMethod.GET,"/api/recipes/**").permitAll()*/
     	/* allow all the requests which match “/auth/**” */
 		/* this endpoints are used for authentication and registration */ 
 		/* at that point of time we don’t expect the user to be authenticated */ 
@@ -42,6 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/recipe-category/").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/recipes/").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/recipes/by-category/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/recipes/by-name/**").permitAll()
                 .antMatchers("/v2/api-docs",
                         "/configuration/ui",
                         "/swagger-resources/**",
