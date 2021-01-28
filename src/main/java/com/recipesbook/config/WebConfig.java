@@ -28,7 +28,7 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) 
             {
             	registry.addMapping("/**")
-            	.allowedOriginPatterns("http://localhost:4200")
+            	.allowedOriginPatterns("https://book-recipe-angular-app.herokuapp.com")
             	.allowedMethods("*")
             	.allowCredentials(true)
             	.allowedHeaders("*")
