@@ -25,6 +25,7 @@ import com.recipesbook.Exception.RecipeBookException;
 import com.recipesbook.Repository.UserRepository;
 import com.recipesbook.Repository.VerificationTokenRepository;
 import com.recipesbook.Security.JwtProvider;
+import com.recipesbook.config.AppConfig;
 import com.recipesbook.util.Constants;
 
 import lombok.AllArgsConstructor;
@@ -48,6 +49,8 @@ public class AuthService {
 
 	private final RefreshTokenService refreshTokenService;
 
+	private final AppConfig appConfig;
+	
 	public void signup(RegisterRequest registerRequest) {
 		User user = new User();
 		user.setUsername(registerRequest.getUsername());
@@ -64,8 +67,9 @@ public class AuthService {
 		 * token.
 		 */
 		String message = mailContentBuilder.Build(
-				"Thank you for signing up to Spring Reddit, please click on the below url to activate your account : "
-						+ Constants.ACTIVATION_EMAIL + "/" + token);
+				"Thank you for signing up to recipes Book, " +
+                "please click on the below url to activate your account : " +
+                appConfig.getAppUrl() + "/api/auth/accountVerification/" + token);
 		mailService.sendMail(new NotificationEmail("Please Activate your account", user.getEmail(), message));
 	}
 

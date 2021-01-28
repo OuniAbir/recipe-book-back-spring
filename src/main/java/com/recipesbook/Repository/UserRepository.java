@@ -10,7 +10,7 @@ import com.recipesbook.Domain.User;
  
 public interface UserRepository extends JpaRepository<User, Long> {
 
- 	@Query( value = "SELECT * FROM user WHERE  username= :username " , nativeQuery = true )
+ 	@Query( value = "SELECT * FROM recipe_book_user WHERE  username= :username " , nativeQuery = true )
 	Optional<User> findByUserName(@Param( value = "username") String username);
  
 
